@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Classement</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h2>Classement des gratinés</h2>
-    <table id="classementTable"></table>
-    <button onclick="logout()">Se déconnecter</button>
+    <h1>Classement des gratinés</h1>
+    <div id="voteSection"></div>
+    <table>
+      <thead>
+        <tr><th>Nom</th><th>Note</th></tr>
+      </thead>
+      <tbody id="classementTable"></tbody>
+    </table>
+    <button class="btn" onclick="logout()">Se déconnecter</button>
   </div>
   <script src="users.js"></script>
   <script src="script.js"></script>
