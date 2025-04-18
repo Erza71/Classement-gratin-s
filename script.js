@@ -1,97 +1,41 @@
-// Connexion
-document.addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const prenom = document.getElementById("prenom").value.trim().toLowerCase();
-      const code = document.getElementById("code").value.trim();
-      let valid = false;
+const utilisateurs = {
+  "valentine": "4861",
+  "alek": "1652",
+  "antonin": "0497",
+  "edwin": "7580",
+  "joaquim": "8204",
+  "emilien": "2365",
+  "marina": "7932",
+  "abdullah": "9723",
+  "leo": "4081",
+  "maxime": "8710",
+  "nathan": "5139",
+  "adel": "1468",
+  "enzo": "6593",
+  "lucie": "3094",
+  "mathilde": "1247",
+  "noemy": "9042",
+  "simon": "2458",
+  "mateo": "7146"
+};
 
-      for (let name in users) {
-        if (name.toLowerCase() === prenom && users[name] === code) {
-          localStorage.setItem("currentUser", name);
-          valid = true;
-          break;
-        }
-      }
+const form = document.getElementById("login-form");
+const error = document.getElementById("login-error");
 
-      if (valid) {
-        window.location.href = "classement.html";
-      } else {
-        document.getElementById("loginError").textContent = "Identifiants incorrects.";
-      }
-    });
-  }
+function normaliserPrenom(prenom) {
+  return prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
 
-  const currentUser = localStorage.getItem("currentUser");
-  const classementTable = document.getElementById("classementTable");
-  const voteSection = document.getElementById("voteSection");
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const prenomInput = document.getElementById("prenom").value.trim();
+  const mdpInput = document.getElementById("mdp").value.trim();
 
-  if (classementTable && voteSection) {
-    const notes = JSON.parse(localStorage.getItem("votes") || "{}");
-
-    // Génère les champs de vote si l’utilisateur est connecté
-    if (currentUser) {
-      voteSection.innerHTML = "<h2>Vote</h2>";
-      for (let name in users) {
-        if (name !== currentUser) {
-          const input = document.createElement("input");
-          input.type = "number";
-          input.min = 0;
-          input.max = 10;
-          input.placeholder = `Note pour ${name}`;
-          input.value = notes[currentUser]?.[name] ?? "";
-          input.onchange = () => {
-            if (!notes[currentUser]) notes[currentUser] = {};
-            notes[currentUser][name] = Number(input.value);
-            localStorage.setItem("votes", JSON.stringify(notes));
-            afficherClassement(notes);
-          };
-          voteSection.appendChild(input);
-          voteSection.appendChild(document.createElement("br"));
-        }
-      }
-    }
-
-    // Affiche le tableau
-    afficherClassement(notes);
+  const prenomNorm = normaliserPrenom(prenomInput);
+  
+  if (utilisateurs[prenomNorm] && utilisateurs[prenomNorm] === mdpInput) {
+    window.location.href = "vote.html?prenom=" + prenomNorm;
+  } else {
+    error.textContent = "Prénom ou mot de passe incorrect.";
   }
 });
-
-function afficherClassement(votes) {
-  const table = document.getElementById("classementTable");
-  const notesTotales = {};
-  const nbVotes = {};
-
-  for (let votant in votes) {
-    for (let votePour in votes[votant]) {
-      if (!notesTotales[votePour]) {
-        notesTotales[votePour] = 0;
-        nbVotes[votePour] = 0;
-      }
-      notesTotales[votePour] += votes[votant][votePour];
-      nbVotes[votePour]++;
-    }
-  }
-
-  const moyennes = [];
-  for (let name in users) {
-    const moyenne = nbVotes[name] ? (notesTotales[name] / nbVotes[name]).toFixed(1) : "-";
-    moyennes.push({ name, moyenne });
-  }
-
-  moyennes.sort((a, b) => (b.moyenne === "-" ? -1 : parseFloat(b.moyenne)) - (a.moyenne === "-" ? -1 : parseFloat(a.moyenne)));
-
-  table.innerHTML = "";
-  for (let { name, moyenne } of moyennes) {
-    const row = document.createElement("tr");
-    row.innerHTML = `<td>${name}</td><td>${moyenne}</td>`;
-    table.appendChild(row);
-  }
-}
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  window.location.href = "index.html";
-}
