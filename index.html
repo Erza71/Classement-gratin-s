@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Les gratinés du Dauphiné</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <h1>Bienvenue sur Les gratinés du Dauphiné</h1>
-    <a class="btn" href="login.html">Se connecter</a>
+  <div class="container login-container">
+    <h1>Les gratinés du Dauphiné</h1>
+    <p>Connecte-toi pour noter tes gratinés préférés !</p>
+    <form id="login-form">
+      <input type="text" id="prenom" placeholder="Ton prénom" required />
+      <input type="password" id="mdp" placeholder="Mot de passe (4 chiffres)" required />
+      <button type="submit">Connexion</button>
+    </form>
+    <p id="login-error" class="error-msg"></p>
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
