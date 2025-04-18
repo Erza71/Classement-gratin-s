@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Classement des Gratinés</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tableau {
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.7rem;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    th {
+      background: #00ffc8;
+      color: #000;
+    }
+    tr:hover {
+      background: #2a2a2a;
+    }
+    .note-input {
+      width: 60px;
+      padding: 0.3rem;
+      border-radius: 5px;
+      border: none;
+      text-align: center;
+    }
+    .btn-voter {
+      margin-top: 1rem;
+    }
+    .moyenne {
+      font-weight: bold;
+      color: #00ffc8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vote pour les Gratinés</h1>
+    <form id="vote-form">
+      <div class="tableau">
+        <table id="vote-table">
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="vote-body">
+            <!-- Rempli dynamiquement -->
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-voter" type="submit">Valider mes votes</button>
+    </form>
+  </div>
+
+  <script>
+    const participants = [
+      "Valentine", "Alek", "Antonin", "Edwin", "Joaquim", "Emilien", "Marina",
+      "Abdullah", "Léo", "Maxime", "Nathan", "Adel", "Enzo", "Lucie", "Mathilde",
+      "Noémy", "Simon", "Mateo"
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentUser = urlParams.get("prenom");
+
+    const tbody = document.getElementById("vote-body");
+
+    participants.forEach(nom => {
+      if (nom.toLowerCase() !== currentUser) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${nom}</td>
+          <td><input class="note-input" type="number" min="0" max="10" /></td>
+        `;
+        tbody.appendChild(row);
+      }
+    });
+
+    document.getElementById("vote-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("Votes enregistrés !");
+      window.location.href = "classement.html";
+    });
+  </script>
+</body>
+</html>
