@@ -1,52 +1,97 @@
-function login() {
-  const prenomInput = document.getElementById("prenom").value.toLowerCase().trim();
-  const mdp = document.getElementById("mdp").value.trim();
-  const erreur = document.getElementById("erreur");
+// Connexion
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const prenom = document.getElementById("prenom").value.trim().toLowerCase();
+      const code = document.getElementById("code").value.trim();
+      let valid = false;
 
-  const match = Object.keys(users).find(name => levenshtein(name, prenomInput) <= 2);
+      for (let name in users) {
+        if (name.toLowerCase() === prenom && users[name] === code) {
+          localStorage.setItem("currentUser", name);
+          valid = true;
+          break;
+        }
+      }
 
-  if (match && users[match] === mdp) {
-    localStorage.setItem("user", match);
-    window.location.href = "classement.html";
-  } else {
-    erreur.textContent = "Prénom ou mot de passe incorrect";
+      if (valid) {
+        window.location.href = "classement.html";
+      } else {
+        document.getElementById("loginError").textContent = "Identifiants incorrects.";
+      }
+    });
+  }
+
+  const currentUser = localStorage.getItem("currentUser");
+  const classementTable = document.getElementById("classementTable");
+  const voteSection = document.getElementById("voteSection");
+
+  if (classementTable && voteSection) {
+    const notes = JSON.parse(localStorage.getItem("votes") || "{}");
+
+    // Génère les champs de vote si l’utilisateur est connecté
+    if (currentUser) {
+      voteSection.innerHTML = "<h2>Vote</h2>";
+      for (let name in users) {
+        if (name !== currentUser) {
+          const input = document.createElement("input");
+          input.type = "number";
+          input.min = 0;
+          input.max = 10;
+          input.placeholder = `Note pour ${name}`;
+          input.value = notes[currentUser]?.[name] ?? "";
+          input.onchange = () => {
+            if (!notes[currentUser]) notes[currentUser] = {};
+            notes[currentUser][name] = Number(input.value);
+            localStorage.setItem("votes", JSON.stringify(notes));
+            afficherClassement(notes);
+          };
+          voteSection.appendChild(input);
+          voteSection.appendChild(document.createElement("br"));
+        }
+      }
+    }
+
+    // Affiche le tableau
+    afficherClassement(notes);
+  }
+});
+
+function afficherClassement(votes) {
+  const table = document.getElementById("classementTable");
+  const notesTotales = {};
+  const nbVotes = {};
+
+  for (let votant in votes) {
+    for (let votePour in votes[votant]) {
+      if (!notesTotales[votePour]) {
+        notesTotales[votePour] = 0;
+        nbVotes[votePour] = 0;
+      }
+      notesTotales[votePour] += votes[votant][votePour];
+      nbVotes[votePour]++;
+    }
+  }
+
+  const moyennes = [];
+  for (let name in users) {
+    const moyenne = nbVotes[name] ? (notesTotales[name] / nbVotes[name]).toFixed(1) : "-";
+    moyennes.push({ name, moyenne });
+  }
+
+  moyennes.sort((a, b) => (b.moyenne === "-" ? -1 : parseFloat(b.moyenne)) - (a.moyenne === "-" ? -1 : parseFloat(a.moyenne)));
+
+  table.innerHTML = "";
+  for (let { name, moyenne } of moyennes) {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${name}</td><td>${moyenne}</td>`;
+    table.appendChild(row);
   }
 }
 
 function logout() {
-  localStorage.removeItem("user");
-  window.location.href = "login.html";
-}
-
-// Classement page
-if (window.location.pathname.includes("classement.html")) {
-  const user = localStorage.getItem("user");
-  if (!user) window.location.href = "login.html";
-
-  const table = document.getElementById("classementTable");
-  const participants = Object.keys(users);
-  table.innerHTML = `<tr><th>Nom</th><th>Note</th></tr>`;
-  participants.forEach(p => {
-    const note = Math.floor(Math.random() * 6) + 5; // notes aléatoires pour démo
-    table.innerHTML += `<tr><td>${capitalize(p)}</td><td>${note}</td></tr>`;
-  });
-}
-
-function levenshtein(a, b) {
-  const matrix = Array.from({ length: a.length + 1 }, () => []);
-  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      matrix[i][j] = a[i - 1] === b[j - 1]
-        ? matrix[i - 1][j - 1]
-        : Math.min(matrix[i - 1][j - 1], matrix[i][j - 1], matrix[i - 1][j]) + 1;
-    }
-  }
-  return matrix[a.length][b.length];
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  localStorage.removeItem("currentUser");
+  window.location.href = "index.html";
 }
