@@ -2,23 +2,23 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #121212;
-  color: #f0f0f0;
+  background-color: #181818;
+  color: #eaeaea;
 }
 
 .container {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #1e1e1e;
+  background-color: #242424;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(255, 0, 150, 0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
 }
 
 h1 {
   text-align: center;
-  color: #ff4ecd;
-  font-size: 2.5em;
+  color: #00d0ff;
+  font-size: 2.2em;
   margin-bottom: 30px;
 }
 
@@ -32,28 +32,71 @@ input[type="number"] {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
-  border: none;
+  border: 1px solid #444;
   border-radius: 8px;
-  background-color: #2a2a2a;
-  color: #fff;
+  background-color: #2e2e2e;
+  color: #f0f0f0;
   font-size: 1em;
-  transition: 0.3s;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus {
+input:focus {
   outline: none;
-  background-color: #333;
-  box-shadow: 0 0 8px #ff4ecd;
+  border-color: #00d0ff;
+  box-shadow: 0 0 8px #00d0ff;
 }
 
 button,
 input[type="submit"] {
-  background: linear-gradient(90deg, #ff4ecd, #6f00ff);
+  background: #00d0ff;
   color: white;
-  padding: 12px 24px;
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size:
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background: #00b0e0;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+th {
+  background-color: #303030;
+  color: #00d0ff;
+}
+
+td {
+  background-color: #262626;
+}
+
+.logout {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  background: #ff4081;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.logout:hover {
+  background: #e03070;
+}
